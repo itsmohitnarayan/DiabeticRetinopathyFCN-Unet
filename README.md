@@ -33,9 +33,6 @@ The datasets used for this project are:
 - [IDRID](https://idrid.grand-challenge.org/)
 
 Download the datasets and place them in the `data/` directory.
-```
-
-
 
 
 ## Results
