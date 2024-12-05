@@ -47,6 +47,48 @@ def load_and_preprocess_image(image_path):
     return enhanced_image
 ```
 
+`Step 2:` Otsu Thresholding Segmentation
+The function apply_otsu_thresholding applies Otsu's method to segment the image.
+```markdown
+def apply_otsu_thresholding(image):
+    threshold_value = threshold_otsu(image)
+    segmented_image = image > threshold_value
+    return segmented_image.astype(np.uint8)
+```
+
+`Step 3:` Build a Pretrained U-Net Model
+The function unet_model builds a U-Net model with a contracting path, bottleneck, and expanding path.
+```markdown
+def unet_model(input_size=(256, 256, 1)):
+    inputs = Input(input_size)
+    c1 = Conv2D(64, (3, 3), activation='relu', padding='same')(inputs)
+    p1 = MaxPooling2D((2, 2))(c1)
+    c2 = Conv2D(128, (3, 3), activation='relu', padding='same')(p1)
+    p2 = MaxPooling2D((2, 2))(c2)
+    c3 = Conv2D(256, (3, 3), activation='relu', padding='same')(p2)
+    p3 = MaxPooling2D((2, 2))(c3)
+    c4 = Conv2D(512, (3, 3), activation='relu', padding='same')(p3)
+    u1 = UpSampling2D((2, 2))(c4)
+    c5 = Conv2D(256, (3, 3), activation='relu', padding='same')(u1)
+    u2 = UpSampling2D((2, 2))(c5)
+    c6 = Conv2D(128, (3, 3), activation='relu', padding='same')(u2)
+    u3 = UpSampling2D((2, 2))(c6)
+    c7 = Conv2D(64, (3, 3), activation='relu', padding='same')(u3)
+    outputs = Conv2D(1, (1, 1), activation='sigmoid')(c7)
+    model = Model(inputs=[inputs], outputs=[outputs])
+    return model
+```
+
+`Step 4:` Compile and Evaluate the Model on the Segmented Images
+The function compile_and_evaluate_model compiles the model with the Adam optimizer and binary cross-entropy loss, trains it, and evaluates its accuracy on the test data.
+```markdown
+def compile_and_evaluate_model(model, X_train, y_train, X_test, y_test):
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=5)
+    score = model.evaluate(X_test, y_test)
+    print(f"Test Accuracy: {score[1]*100:.2f}%")
+```
+
 ## Results
 The model achieves an accuracy of 99.39% on the test set. Below are some sample predictions:
 
