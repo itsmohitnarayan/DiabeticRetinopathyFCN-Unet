@@ -131,7 +131,7 @@ python new2.py
 ```
 
 ## Results
-The model achieves an accuracy of 98.98% on the test set. Below are some sample predictions:
+The model achieves an accuracy of 98.98% on the test set.
 
 
 ## Contributing
