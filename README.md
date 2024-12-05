@@ -89,8 +89,49 @@ def compile_and_evaluate_model(model, X_train, y_train, X_test, y_test):
     print(f"Test Accuracy: {score[1]*100:.2f}%")
 ```
 
+`Main Function to Process Multiple Images`
+The function process_images processes multiple images by loading, preprocessing, and segmenting them.
+```markdown
+def process_images(dataset_path, limit=500):
+    processed_images = []
+    segmented_images = []
+    for i, filename in enumerate(os.listdir(dataset_path)):
+        if i >= limit:
+            break
+        image_path = os.path.join(dataset_path, filename)
+        enhanced_image = load_and_preprocess_image(image_path)
+        processed_images.append(enhanced_image)
+        cv2.imwrite(f'D:/2024/DiabeticRetinopathyFCN-Unet/enhanced/enhanced_{i}.png', enhanced_image)
+        segmented_image = apply_otsu_thresholding(enhanced_image)
+        segmented_images.append(segmented_image)
+        cv2.imwrite(f'D:/2024/DiabeticRetinopathyFCN-Unet/segmented/segmented_{i}.png', segmented_image)
+    return np.array(processed_images), np.array(segmented_images)
+```
+
+`Train the Model on the Dataset`
+The function train_on_dataset orchestrates the entire process by calling the necessary functions to preprocess images, build the model, and train it.
+```markdown
+def train_on_dataset(dataset_path, limit=500):
+    X_train, y_train = process_images(dataset_path, limit=limit)
+    X_train = np.expand_dims(X_train, axis=-1)
+    y_train = np.expand_dims(y_train, axis=-1)
+    model = unet_model(input_size=(X_train.shape[1], X_train.shape[2], 1))
+    split_index = int(0.8 * len(X_train))
+    X_test = X_train[split_index:]
+    y_test = y_train[split_index:]
+    X_train = X_train[:split_index]
+    y_train = y_train[:split_index]
+    compile_and_evaluate_model(model, X_train, y_train, X_test, y_test)
+```
+
+`Execution`
+To start the training process, simply run the script:
+```markdown
+python new2.py
+```
+
 ## Results
-The model achieves an accuracy of 99.39% on the test set. Below are some sample predictions:
+The model achieves an accuracy of 98.98% on the test set. Below are some sample predictions:
 
 
 ## Contributing
@@ -98,5 +139,4 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-//copilot prepare a readme for this project 
 
