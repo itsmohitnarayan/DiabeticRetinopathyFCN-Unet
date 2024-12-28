@@ -138,5 +138,5 @@ The model achieves an accuracy of 98.98% on the test set.
 Contributions are welcome! Please open an issue or submit a pull request.
 
 ## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the Private and Patiented License. See the [LICENSE](LICENSE) file for details.
 
