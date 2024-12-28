@@ -129,6 +129,8 @@ To start the training process, simply run the script:
 ```markdown
 python new2.py
 ```
+## Note
+This work is not completed many work is in progress.
 
 ## Results
 The model achieves an accuracy of 98.98% on the test set.
